@@ -2,7 +2,7 @@ import time
 import math
 import os
 import json
-from cat.mad_hatter.decorators import hook
+from cat import hook, StrayCat
 from cat.log import log
 
 # Path for the persistent data file
@@ -72,7 +72,7 @@ def _check_complexity(prompt: str, threshold: float) -> bool:
     return ratio > threshold
 
 @hook
-def fast_reply(fast_reply: dict, cat) -> dict | None:
+def fast_reply(reply: str, cat: StrayCat) -> str | None:
     """
     Core hook for the Prompt Guard plugin.
     
@@ -101,9 +101,9 @@ def fast_reply(fast_reply: dict, cat) -> dict | None:
     if not settings.get("enable_rate_limit"):
         return None
 
-    user_id = cat.user_id
+    user_id = cat.user.id
     current_time = time.time()
-    user_prompt = cat.working_memory.get("user_message_json", {}).get("text", "")
+    user_prompt = cat.working_memory.user_message.text
     
     # Load all user data and get specific user data
     all_data = _load_data()
@@ -120,7 +120,7 @@ def fast_reply(fast_reply: dict, cat) -> dict | None:
         else:
             message_template = settings.get("user_limited_message", "You have sent too many messages. Please wait {minutes} minutes before sending new messages.")
             block_message = message_template.format(minutes=remaining_minutes)
-        return {"output": f"{block_message}"}
+        return block_message
     elif "blocked_until" in user_data and current_time >= user_data["blocked_until"]:
         # The user is no longer blocked, so clean up the block data
         del user_data["blocked_until"]
@@ -188,14 +188,12 @@ def fast_reply(fast_reply: dict, cat) -> dict | None:
                 jailbreak_severity = settings.get("jailbreak_severity_level", 2)
                 if jailbreak_severity > infraction_level:
                     infraction_level = jailbreak_severity
-            
+
+            block_minutes = suspension_durations[-1]
             if infraction_level < len(suspension_durations):
                 block_minutes = suspension_durations[infraction_level]
-            else:
-                block_minutes = suspension_durations[-1]
-            
-            user_data["infraction_level"] = infraction_level + 1
 
+            user_data["infraction_level"] = infraction_level + 1
         else:
             # Fixed-duration suspension for rate limit violations
             block_minutes = settings.get("rate_limit_suspension_minutes", 30)
@@ -220,7 +218,7 @@ def fast_reply(fast_reply: dict, cat) -> dict | None:
         else:
             message_template = settings.get("user_limited_message", "You have sent too many messages. Please wait {minutes} minutes before sending new messages.")
             block_message = message_template.format(minutes=block_minutes)
-        return {"output": f"{block_message}"}
+        return block_message
 
 
     # --- Regular Flow (No Infraction) ---

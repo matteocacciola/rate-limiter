@@ -1,4 +1,4 @@
-from cat.mad_hatter.decorators import plugin
+from cat import plugin
 from pydantic import BaseModel, Field, field_validator
 from typing import List
 
@@ -48,7 +48,6 @@ class RateLimiterSettings(BaseModel):
         ],
         title="Jailbreak Detection Keywords",
         description="A list of case-insensitive keywords or phrases that trigger an infraction.",
-        extra={"type": "TextArea"},
     )
 
     @field_validator("jailbreak_keywords", mode="before")
