@@ -72,7 +72,7 @@ def _check_complexity(prompt: str, threshold: float) -> bool:
     return ratio > threshold
 
 @hook
-def fast_reply(reply: str, cat: StrayCat) -> str | None:
+def fast_reply(reply: str | None, cat: StrayCat) -> str | None:
     """
     Core hook for the Prompt Guard plugin.
     
