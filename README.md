@@ -20,7 +20,7 @@ Rate Limiter acts as a firewall for user prompts, analyzing them for suspicious 
 
 ## Configuration
 
-All settings can be configured from the Cheshire Cat Admin Panel under the **Plugins** section. Find the **Rate Limiter** plugin and click on "Settings".
+All settings can be configured from the Grinning Cat Admin Panel under the **Plugins** section. Find the **Rate Limiter** plugin and click on "Settings".
 
 ---
 
