@@ -1,6 +1,6 @@
 # Rate Limiter Plugin
 
-A powerful security and moderation plugin for the Cheshire Cat AI framework designed to protect your instance from spam, abuse, and malicious inputs.
+A powerful security and moderation plugin for the Grinning Cat framework designed to protect your instance from spam, abuse, and malicious inputs.
 
 Rate Limiter acts as a firewall for user prompts, analyzing them for suspicious patterns and controlling the frequency of messages. It allows you to set up a robust defense system with fine-grained control over user behavior.
 
