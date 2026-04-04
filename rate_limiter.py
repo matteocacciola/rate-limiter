@@ -72,7 +72,7 @@ def _check_complexity(prompt: str, threshold: float) -> bool:
     return ratio > threshold
 
 @hook
-def fast_reply(reply: str | None, cat: StrayCat) -> str | None:
+async def fast_reply(reply: str | None, cat: StrayCat) -> str | None:
     """
     Core hook for the Prompt Guard plugin.
     
@@ -92,8 +92,7 @@ def fast_reply(reply: str | None, cat: StrayCat) -> str | None:
     
     # Load plugin settings
     try:
-        plugin = cat.mad_hatter.get_plugin()
-        settings = plugin.load_settings()
+        settings = await cat.mad_hatter.get_plugin().load_settings()
     except Exception as e:
         log.error(f"[RateLimiter] Could not load settings: {e}")
         return None # Do not block in case of an error

@@ -2,6 +2,7 @@ from cat import plugin
 from pydantic import BaseModel, Field, field_validator
 from typing import List
 
+
 class RateLimiterSettings(BaseModel):
     # Main switch
     enable_rate_limit: bool = Field(
