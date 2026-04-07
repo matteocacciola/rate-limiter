@@ -2,6 +2,8 @@ import time
 import math
 import os
 import json
+from pathlib import Path
+
 from cat import hook, StrayCat
 from cat.log import log
 
@@ -26,8 +28,7 @@ def _load_data(force_reload=False):
             _user_data_cache = {}
         else:
             try:
-                with open(DATA_FILE, "r") as f:
-                    _user_data_cache = json.load(f)
+                _user_data_cache = json.load(Path(DATA_FILE).open("r"))
             except (json.JSONDecodeError, IOError):
                 _user_data_cache = {}
         _cache_last_loaded = current_time
@@ -37,8 +38,8 @@ def _save_data(data):
     """Saves the rate limit data to the JSON file and updates the in-memory cache."""
     global _user_data_cache
     try:
-        with open(DATA_FILE, "w") as f:
-            json.dump(data, f, indent=4)
+        os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
+        Path(DATA_FILE).write_text(json.dumps(data, indent=4))
         _user_data_cache = data # Update cache on successful save
     except IOError as e:
         log.error(f"[RateLimiter] Could not save data to {DATA_FILE}: {e}")
